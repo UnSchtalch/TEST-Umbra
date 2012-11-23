@@ -1,0 +1,7 @@
+0. Make initial window, GL init
+1. Make loading menu from files
+2. Make menu items mouse-clickable
+3. Write xml-reading module and data structures for it.
+4. Write data-rendering module, picking data from p.3
+
+5. Futher stages 
