@@ -1,4 +1,4 @@
-0. Make initial window, GL init
+0. Make initial window, GL init ---- Done
 1. Make loading menu from files
 2. Make menu items mouse-clickable
 3. Write xml-reading module and data structures for it.
