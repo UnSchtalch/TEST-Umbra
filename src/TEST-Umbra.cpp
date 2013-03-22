@@ -16,63 +16,58 @@ bool loadPNGImage(char* name, int &outWidth, int &outHeght, bool &outHasAlpha,
 
 GLubyte *textureImage;//bad idea, just for experiment;
 
-void init(void)
-
+GLuint
+png_texture(char *filename)
 {
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+	GLuint tex;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
 
-	glEnable(GL_BLEND);//transparency
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	//mock-up code
 	int height, width;
 	bool hasAlpha;
-	char filename[]="1.png";
 	bool success = false;
 	success = loadPNGImage(filename, width, height, hasAlpha, &textureImage);
-	if (!success)
-	{
-		cout<<"fail!"<<endl;
-		return;
-	}
-
-	cout<<"win!"<<endl;
-	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	if (!success) return 0;
 	glTexImage2D(GL_TEXTURE_2D,0,hasAlpha ? 4:3, width, height,0,hasAlpha ? GLUT_RGBA:GL_RGB, GL_UNSIGNED_BYTE, textureImage);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glEnable(GL_TEXTURE_2D);
-	glShadeModel(GL_FLAT);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMatrixMode(GL_MODELVIEW);
+	return tex;
 }
+
+GLuint textnum;
 
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glTranslatef(0.0,0.0,-3.6);
-	glBegin(GL_QUADS);
+	glBindTexture(GL_TEXTURE_2D, textnum);
+	glColor3f(1.0, 1.0, 1.0);
+	glBegin(GL_QUADS); {
+		glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
+		glTexCoord2f(1.0, 0.0); glVertex2f(1.0, 0.0);
+		glTexCoord2f(1.0, 1.0); glVertex2f(1.0, 1.0);
+		glTexCoord2f(0.0, 1.0); glVertex2f(0.0, 1.0);
+	} glEnd();
 
-	glTexCoord2f(0.0,0.0);
-	glVertex3d(-2.0,-1.0, 0.0);
+	glFlush();
 
-	glTexCoord2f(0.0,1.0);
-	glVertex3d(-2.0,1.0, 0.0);
+}
 
-	glTexCoord2f(1.0,1.0);
-	glVertex3d(0.0,1.0, 0.0);
+void init(void)
 
-	glTexCoord2f(1.0,0.0);
-	glVertex3d(0.0,-1.0, 0.0);
-
-	glEnd();
-	glutSwapBuffers();
+{
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glEnable(GL_BLEND);//transparency
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_TEXTURE_2D);
+	textnum = png_texture("monkey.png");
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(-0.1, 1.1, -0.1, 1.1);
 
 }
 
