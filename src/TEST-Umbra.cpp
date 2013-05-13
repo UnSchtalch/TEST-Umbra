@@ -35,7 +35,7 @@ GLuint png_texture(char *filename)
 	success = loadPNGImage(filename, width, height, hasAlpha, &textureImage);
 	if (!success)
 	{
-		cout << "fail!" << endl;
+	//	cout << "fail!" << endl;
 		return 0;
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
@@ -72,10 +72,10 @@ void init(void)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	cout<<glGetError()<<endl;
 	glEnable(GL_TEXTURE_2D);
-	cout<<glGetError()<<endl;
+	//cout<<glGetError()<<endl;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//gluOrtho2D(-0.1, 1.1, -0.1, 1.1);
+	gluOrtho2D(-0.1, 1.1, -0.1, 1.1);
 
 }
 
